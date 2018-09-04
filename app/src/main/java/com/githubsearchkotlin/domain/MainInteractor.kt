@@ -2,25 +2,27 @@ package com.githubsearchkotlin.domain
 
 import com.githubsearchkotlin.base.viper.Interactor
 import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
-import com.githubsearchkotlin.data.model.SearchRepoZipResponse
+import com.githubsearchkotlin.data.model.SearchRepoResponse
 import com.githubsearchkotlin.data.network.ApiHelper
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class MainInteractor @Inject constructor(var apiHelper: ApiHelper, var sharedPreferences: PreferencesHelper) :
-        Interactor<SearchRepoZipResponse>() {
+        Interactor<SearchRepoResponse>() {
 
     lateinit var q: String
     private var page = 1
 
-    override fun getApiObservable(): Observable<SearchRepoZipResponse> {
-        return Observable.zip(
+    override fun getApiObservable() : Observable<SearchRepoResponse> {
+      return   Observable.merge(
                 apiHelper.searchRepo(sharedPreferences.loadUSerCredential(), q,
                         OPTIONS.SORT_TYPE.param as String, OPTIONS.ORDER.param,
-                        OPTIONS.PER_PAGE.param as Int, page),
+                        OPTIONS.PER_PAGE.param as Int, page).observeOn(Schedulers.newThread()),
+
                 apiHelper.searchRepo(sharedPreferences.loadUSerCredential(), q,
                         OPTIONS.SORT_TYPE.param as String, OPTIONS.ORDER.param,
-                        OPTIONS.PER_PAGE.param as Int, page)
+                        OPTIONS.PER_PAGE.param as Int, page).observeOn(Schedulers.newThread())
         )
     }
 

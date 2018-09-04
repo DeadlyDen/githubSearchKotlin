@@ -15,6 +15,7 @@ interface ApiService {
 
     @GET("user")
      fun doLogin(@Header("Authorization") authorization: String) : Observable<UserResponse>
+
     @GET("search/repositories")
     fun searchRepo(@Header("Authorization")  authorization : String,
                    @Query("q")  q : String, @Query("sort")  sort : String,
@@ -23,4 +24,14 @@ interface ApiService {
 
 }
 
+
+interface ExtendedApiService : ApiService {
+    @GET("bla-bla")
+    fun blaBla(@Header("Authorization") authorization: String) : Observable<UserResponse>
+}
+
+interface SingleApiService {
+    @GET("bla-bla")
+    fun blaBla(@Header("Authorization") authorization: String) : Observable<UserResponse>
+}
 

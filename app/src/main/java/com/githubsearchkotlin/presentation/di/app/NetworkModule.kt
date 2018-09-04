@@ -3,6 +3,8 @@ package com.githubsearchkotlin.presentation.di.app
 import com.githubsearchkotlin.BuildConfig
 import com.githubsearchkotlin.data.network.ApiHelper
 import com.githubsearchkotlin.data.network.ApiService
+import com.githubsearchkotlin.data.network.ExtendedApiService
+import com.githubsearchkotlin.data.network.SingleApiService
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -24,7 +26,7 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideApiClient(): ApiService {
+    fun provideApiClient(): Retrofit {
         val logging = HttpLoggingInterceptor()
         logging.level = HttpLoggingInterceptor.Level.BODY
         if (BuildConfig.DEBUG) {
@@ -34,8 +36,24 @@ class NetworkModule {
         httpClient.readTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
         httpClient.writeTimeout(TIMEOUT.toLong(), TimeUnit.SECONDS)
 
-        val retrofit = builder.client(httpClient.build()).build()
-        return retrofit.create(ApiService::class.java)
+        return builder.client(httpClient.build()).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit) : ApiService {
+        return  retrofit.create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideExtendedApiService(retrofit: Retrofit) : ExtendedApiService {
+        return  retrofit.create(ExtendedApiService::class.java)
+    }
+    @Provides
+    @Singleton
+    fun provideSingleApiService(retrofit: Retrofit) : SingleApiService {
+        return  retrofit.create(SingleApiService::class.java)
     }
 
     @Provides

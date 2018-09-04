@@ -17,5 +17,4 @@ class ApiHelper @Inject constructor (var apiService: ApiService) : ApiService {
         return apiService.searchRepo(authorization, q, sort, order, per, page)
     }
 
-
 }

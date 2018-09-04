@@ -17,8 +17,8 @@ class LoginInteractor @Inject constructor(val apiService: ApiService,
     }
 
     fun doLlogin() {
-        credential?.apply {
-            preferencesHelper.saveUserCredential(credential!!)
+        credential?.let {
+            preferencesHelper.saveUserCredential(it)
             fetch()
         }
     }
