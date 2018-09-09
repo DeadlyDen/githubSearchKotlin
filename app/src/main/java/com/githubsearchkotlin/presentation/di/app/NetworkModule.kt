@@ -1,10 +1,9 @@
 package com.githubsearchkotlin.presentation.di.app
 
 import com.githubsearchkotlin.BuildConfig
-import com.githubsearchkotlin.data.network.ApiHelper
+import com.githubsearchkotlin.base.repository.BaseNetworkSpecification
 import com.githubsearchkotlin.data.network.ApiService
-import com.githubsearchkotlin.data.network.ExtendedApiService
-import com.githubsearchkotlin.data.network.SingleApiService
+import com.githubsearchkotlin.data.network.RepoSearchApiService
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -47,19 +46,13 @@ class NetworkModule {
 
     @Provides
     @Singleton
-    fun provideExtendedApiService(retrofit: Retrofit) : ExtendedApiService {
-        return  retrofit.create(ExtendedApiService::class.java)
-    }
-    @Provides
-    @Singleton
-    fun provideSingleApiService(retrofit: Retrofit) : SingleApiService {
-        return  retrofit.create(SingleApiService::class.java)
+    fun provideExtendedApiService(retrofit: Retrofit) : RepoSearchApiService {
+        return  retrofit.create(RepoSearchApiService::class.java)
     }
 
     @Provides
-    @Singleton
-    fun provideApiHelper(apiService: ApiService) : ApiHelper {
-        return ApiHelper(apiService)
+    fun provideBaseNetworkSpecification() : BaseNetworkSpecification {
+        return BaseNetworkSpecification()
     }
 
 

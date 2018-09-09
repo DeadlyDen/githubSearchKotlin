@@ -1,11 +1,9 @@
 package com.githubsearchkotlin.presentation.di.app
 
 import android.content.Context
-import android.content.SharedPreferences
-import com.githubsearchkotlin.data.local.PreferencesHelper
+import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module

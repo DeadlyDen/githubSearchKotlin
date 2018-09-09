@@ -9,4 +9,4 @@ import java.io.Serializable
  */
 
 data class SearchRepoResponse(@SerializedName("items")
-                              @Expose var items: List<RepositoryItem> = ArrayList()) : BaseModel() , Serializable
+                              @Expose var items: ArrayList<RepositoryItem> = ArrayList()) : BaseModel() , Serializable

@@ -2,7 +2,6 @@ package com.githubsearchkotlin.presentation.di.app
 
 import com.githubsearchkotlin.App
 import com.githubsearchkotlin.presentation.di.login.module.LoginBindModule
-import com.githubsearchkotlin.presentation.di.login.module.LoginModule
 import com.githubsearchkotlin.presentation.di.main.module.MainBindModule
 import dagger.BindsInstance
 import dagger.Component

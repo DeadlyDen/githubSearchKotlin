@@ -12,9 +12,9 @@ class RepositoryItem(@field:SerializedName("id")
                      @field:Expose
                      var id: Int, @field:SerializedName("full_name")
                      @field:Expose
-                     var name: String?, @field:SerializedName("html_url")
+                     var name: String, @field:SerializedName("html_url")
                      @field:Expose
-                     var url: String?, viewed: Boolean) : Serializable {
+                     var url: String, viewed: Boolean) : BaseModel() ,Serializable {
 
     var isViewed = false
 

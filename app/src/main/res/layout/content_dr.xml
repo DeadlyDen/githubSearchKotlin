@@ -15,19 +15,7 @@
         android:paddingBottom="25sp" />
 
 
-    <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/spin_kit_more"
-        style="@style/SpinKitView.Small.Wave"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        app:SpinKit_Color="@color/colorPrimary"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@id/recycler_view"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="5sp"
-         />
+    <include layout="@layout/loading_layout" />
 
 
 </android.support.constraint.ConstraintLayout>
