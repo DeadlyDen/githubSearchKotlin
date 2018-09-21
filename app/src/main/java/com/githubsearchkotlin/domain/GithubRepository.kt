@@ -4,6 +4,7 @@ import com.githubsearchkotlin.base.repository.BaseNetworkSpecification
 import com.githubsearchkotlin.base.repository.BaseRepository
 import com.githubsearchkotlin.base.repository.RepositoryCallBack
 import com.githubsearchkotlin.base.repository.Specification
+import com.githubsearchkotlin.data.local.DatabaseHelper
 import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
 import com.githubsearchkotlin.data.model.SearchRepoResponse
 import com.githubsearchkotlin.data.network.RepoSearchApiService
@@ -13,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class GithubRepository @Inject constructor(var repoSearchApiService: RepoSearchApiService,
-                                           var sharedPreferences: PreferencesHelper) : BaseRepository {
+                                           var sharedPreferences: PreferencesHelper, var databaseHelper: DatabaseHelper) : BaseRepository {
 
     lateinit var callback: RepositoryCallBack<SearchRepoResponse>
 

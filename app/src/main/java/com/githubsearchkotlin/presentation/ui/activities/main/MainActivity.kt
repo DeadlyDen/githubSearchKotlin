@@ -18,6 +18,7 @@ import com.githubsearchkotlin.R
 import com.githubsearchkotlin.base.viper.HideShowContentView
 import com.githubsearchkotlin.base.viper.View
 import com.githubsearchkotlin.presentation.ui.activities.BaseActivity
+import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnClick
 import com.githubsearchkotlin.presentation.ui.routing.MainRouter
 import com.githubsearchkotlin.presentation.ui.utils.EndlessRecyclerViewScrollListener
 import org.json.JSONArray
