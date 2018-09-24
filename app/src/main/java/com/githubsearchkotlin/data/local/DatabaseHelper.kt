@@ -4,8 +4,8 @@ import android.content.Context
 import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
 import com.githubsearchkotlin.data.model.RepositoryItem
 import com.githubsearchkotlin.data.model.SearchRepoResponse
-import com.githubsearchkotlin.data.model.orm.RepositoryItemOrm
-import com.githubsearchkotlin.data.model.orm.RepositoryItemOrm_Table
+import com.githubsearchkotlin.data.model.orm.RepositoryItemDB
+import com.githubsearchkotlin.data.model.orm.RepositoryItemDB_Table
 import com.raizlabs.android.dbflow.config.FlowManager
 import com.raizlabs.android.dbflow.sql.language.Delete
 import com.raizlabs.android.dbflow.sql.language.Select
@@ -20,21 +20,33 @@ class DatabaseHelper(context: Context, preferencesHelper: PreferencesHelper) {
         FlowManager.init(context)
     }
 
-    fun saveRepoitoryItemPOJO(repositoryItem: RepositoryItem) {
-        RepositoryItemOrm(repositoryItem.id, repositoryItem.name, repositoryItem.url, repositoryItem.isViewed).save()
+    fun saveRepositoryItemPOJO(repositoryItem: RepositoryItem) {
+        RepositoryItemDB(repositoryItem.id, repositoryItem.name, repositoryItem.url, repositoryItem.isViewed).save()
     }
 
     fun deleteRepositoryItem(id: Int) {
-        Delete().from(RepositoryItemOrm::class.java).where(RepositoryItemOrm_Table.id.`is`(id)).execute()
+        Delete().from(RepositoryItemDB::class.java).where(RepositoryItemDB_Table.id.`is`(id)).execute()
     }
 
     fun deleteRepositoryItems() {
-        Delete().from(RepositoryItemOrm::class.java).async().execute()
+        Delete().from(RepositoryItemDB::class.java).async().execute()
     }
 
     fun getRepositoryItems() : Observable<SearchRepoResponse> {
         val items: ArrayList<RepositoryItem> = ArrayList()
-        Select().from(RepositoryItemOrm::class.java).queryList().forEach { item -> items.add(item.toPOJO()) }
+        Select().from(RepositoryItemDB::class.java).queryList().forEach { item -> items.add(item.toPOJO()) }
         return Observable.just(SearchRepoResponse(items))
+    }
+
+    fun getResentSearchRepoId(): ArrayList<Int> {
+        val recentSearchId: ArrayList<Int> = ArrayList()
+        Select(RepositoryItemDB_Table.id).from(RepositoryItemDB::class.java).queryList().forEach { repositoryItemDB: RepositoryItemDB? ->
+            recentSearchId.add(repositoryItemDB!!.id)
+        }
+        return recentSearchId
+    }
+
+    fun getRecentSearchUrl(id : Int) : String? {
+        return Select(RepositoryItemDB_Table.url).from(RepositoryItemDB::class.java).where(RepositoryItemDB_Table.id.`is`(id)).querySingle()?.url
     }
 }

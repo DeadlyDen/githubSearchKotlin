@@ -43,13 +43,17 @@ class ContentRecyclerAdapter<T>(val context: Context, holderType: Int) : Recycle
 
     fun updateItem(item: T, position: Int) {
         items.set(position, item)
-        notifyDataSetChanged()
+        notifyItemChanged(position)
     }
 
     fun deleteItem(position: Int) {
         items.removeAt(position)
         notifyItemRemoved(position)
         notifyItemRangeChanged(position, items.size)
+    }
+
+    fun getItem(position: Int): T {
+        return items[position]
     }
 
     fun clearData() {

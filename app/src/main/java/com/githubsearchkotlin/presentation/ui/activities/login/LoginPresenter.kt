@@ -26,7 +26,6 @@ class LoginPresenter @Inject constructor(val loginInteractor: LoginInteractor,
     }
 
     override fun onSuccess(model: UserResponse?, onMore: Boolean) {
-        mvpView?.showMessageSnack(model?.login!!)
         mvpView?.hideLoading()
         router?.let {
             UiUtils.closeKeyboard(it as LoginActivity)

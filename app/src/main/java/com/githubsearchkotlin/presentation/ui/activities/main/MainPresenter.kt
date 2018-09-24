@@ -5,7 +5,7 @@ import android.support.v7.widget.SearchView
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
-import com.githubsearchkotlin.base.repository.BaseNetworkSpecification
+import com.githubsearchkotlin.base.repository.GithubNetworkSpecification
 import com.githubsearchkotlin.base.repository.RepositoryCallBack
 import com.githubsearchkotlin.base.viper.BasePresenter
 import com.githubsearchkotlin.data.local.DatabaseHelper
@@ -22,18 +22,19 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainPresenter @Inject constructor(router: MainRouter,val githubRepository: GithubRepository,
-                                        val specification: BaseNetworkSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<MainView, MainRouter>(), RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick {
+                                        val specification: GithubNetworkSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<MainView, MainRouter>(), RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick {
 
     private var contentRecyclerAdapter: ContentRecyclerAdapter<RepositoryItem>
 
     init {
+        this@MainPresenter.router  = router
         githubRepository.callback = this
         contentRecyclerAdapter = ContentRecyclerAdapter(router as Context, ViewHolderManager.SEARCH_REPO)
-        contentRecyclerAdapter.contentRecycleOnClick = this
     }
 
     override fun attachView(mvpView: MainView) {
         super.attachView(mvpView)
+        contentRecyclerAdapter.contentRecycleOnClick = this
         mvpView.initRecyclerData(contentRecyclerAdapter)
     }
 
@@ -47,35 +48,35 @@ class MainPresenter @Inject constructor(router: MainRouter,val githubRepository:
                 .observeOn(AndroidSchedulers.mainThread())
                 .distinctUntilChanged()
                 .subscribe({ charSequence ->
-                    mvpView?.showLoading()
-                    githubRepository.loadMore = false
-                    githubRepository.page = 1
-                    githubRepository.lastPage = 0
-                    githubRepository.q = charSequence.toString()
+                    mvpView?.showProgressBar()
+                    specification.loadMore = false
+                    specification.page = 1
+                    specification.lastPage = 0
+                    specification.q = charSequence.toString()
                     contentRecyclerAdapter.clearData()
                     githubRepository.query(specification)
                 }, { throwable -> Log.v("Error search : ", throwable.toString()) })
     }
 
     fun loadMore(page: Int) {
-        mvpView?.showLoading()
-        githubRepository.loadMore = true
-        githubRepository.page = page
+        mvpView?.showProgressBar()
+        specification.loadMore = true
+        specification.page = page
         githubRepository.query(specification)
     }
 
     override fun onSuccess(model: SearchRepoResponse, onMore: Boolean) {
         if (onMore) {
             contentRecyclerAdapter.uploadItems(model.items)
-            mvpView?.hideLoading()
+            mvpView?.hideProgressBar()
         } else {
             if (model.items.isEmpty()) {
-                mvpView?.hideLoading()
+                mvpView?.hideProgressBar()
                 contentRecyclerAdapter.clearData()
                 return
             }
             contentRecyclerAdapter.uploadItems(model.items)
-            mvpView?.hideLoading()
+            mvpView?.hideProgressBar()
         }
     }
 
@@ -84,6 +85,21 @@ class MainPresenter @Inject constructor(router: MainRouter,val githubRepository:
     }
 
     override fun onClickItem(position: Int, id: Int, v: View) {
-        databaseHelper.saveRepoitoryItemPOJO(contentRecyclerAdapter.items[position])
+        val item: RepositoryItem = contentRecyclerAdapter.getItem(position)
+        if (!item.isViewed) {
+            databaseHelper.saveRepositoryItemPOJO(contentRecyclerAdapter.items[position])
+            router?.startBrowserActivity(item.url)
+            item.isViewed = true
+            contentRecyclerAdapter.updateItem(item, position)
+        } else {
+            databaseHelper.getRecentSearchUrl(item.id)?.let {
+                router?.startBrowserActivity(it)
+            }
+        }
+    }
+
+    fun stopSearch() {
+        githubRepository.stopSearch(specification)
+        mvpView?.hideProgressBar()
     }
 }

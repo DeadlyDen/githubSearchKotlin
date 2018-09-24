@@ -1,5 +1,7 @@
 package com.githubsearchkotlin.presentation.ui.activities.main
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
@@ -13,16 +15,16 @@ import android.view.MenuItem
 import android.widget.EditText
 import butterknife.BindView
 import butterknife.ButterKnife
+import butterknife.OnClick
 import com.github.ybq.android.spinkit.SpinKitView
 import com.githubsearchkotlin.R
 import com.githubsearchkotlin.base.viper.HideShowContentView
 import com.githubsearchkotlin.base.viper.View
 import com.githubsearchkotlin.presentation.ui.activities.BaseActivity
-import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnClick
 import com.githubsearchkotlin.presentation.ui.routing.MainRouter
 import com.githubsearchkotlin.presentation.ui.utils.EndlessRecyclerViewScrollListener
-import org.json.JSONArray
 import javax.inject.Inject
+
 
 interface MainView : View, HideShowContentView {
 
@@ -45,7 +47,8 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
     lateinit var txtSearch: EditText
     @BindView(R.id.nav_view)
     lateinit var navigationView: NavigationView
-
+    @BindView(R.id.spin_kit_more)
+    lateinit var progressBar: SpinKitView
     @Inject
     lateinit var mainPresenter: MainPresenter
 
@@ -100,21 +103,26 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
                 drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }
-            R.id.nav_clear_viewed -> {
-//                searchRepoPresenter.clearViewedRepositories()
-                drawerLayout.closeDrawer(GravityCompat.START)
-                return true
-            }
             else -> return false
         }
     }
 
+    override fun startBrowserActivity(url: String) {
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
+    }
+
+    @OnClick(R.id.stop_search)
+    fun stopSearch() {
+        mainPresenter.stopSearch()
+    }
+
     override fun showProgressBar() {
-//        progressBar.visibility = android.view.View.VISIBLE
+        progressBar.visibility = android.view.View.VISIBLE
     }
 
     override fun hideProgressBar() {
-//        progressBar.visibility = android.view.View.GONE
+        progressBar.visibility = android.view.View.GONE
     }
 
     override fun onBackPressed() {

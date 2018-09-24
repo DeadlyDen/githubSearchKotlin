@@ -1,6 +1,6 @@
 package com.githubsearchkotlin.data.model
 
-import com.githubsearchkotlin.data.model.orm.RepositoryItemOrm
+import com.githubsearchkotlin.data.model.orm.RepositoryItemDB
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
@@ -23,7 +23,7 @@ class RepositoryItem(@field:SerializedName("id")
         this.isViewed = viewed
     }
 
-    fun toORM() : RepositoryItemOrm {
-        return RepositoryItemOrm(id, name, url, isViewed)
+    fun toORM() : RepositoryItemDB {
+        return RepositoryItemDB(id, name, url, isViewed)
     }
 }

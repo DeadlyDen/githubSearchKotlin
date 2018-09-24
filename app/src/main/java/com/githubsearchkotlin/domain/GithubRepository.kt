@@ -1,54 +1,59 @@
 package com.githubsearchkotlin.domain
 
-import com.githubsearchkotlin.base.repository.BaseNetworkSpecification
-import com.githubsearchkotlin.base.repository.BaseRepository
-import com.githubsearchkotlin.base.repository.RepositoryCallBack
-import com.githubsearchkotlin.base.repository.Specification
+import com.githubsearchkotlin.base.repository.*
 import com.githubsearchkotlin.data.local.DatabaseHelper
 import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
+import com.githubsearchkotlin.data.model.RepositoryItem
 import com.githubsearchkotlin.data.model.SearchRepoResponse
 import com.githubsearchkotlin.data.network.RepoSearchApiService
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
+import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class GithubRepository @Inject constructor(var repoSearchApiService: RepoSearchApiService,
-                                           var sharedPreferences: PreferencesHelper, var databaseHelper: DatabaseHelper) : BaseRepository {
+class GithubRepository : BaseRepository {
 
     lateinit var callback: RepositoryCallBack<SearchRepoResponse>
 
-    var q: String = ""
-    var page = 1
-    var lastPage = 0
-    var loadMore = false
+    private var disposables: CompositeDisposable = CompositeDisposable()
 
-    private fun createRepositoryObservable (): Observable<SearchRepoResponse> {
-        return Observable.zip(
-                repoSearchApiService.searchRepo(sharedPreferences.loadUSerCredential(), q,
-                        OPTIONS.SORT_TYPE.param as String, OPTIONS.ORDER.param,
-                        OPTIONS.PER_PAGE.param as Int, page + lastPage).observeOn(Schedulers.newThread()),
-                repoSearchApiService.searchRepo(sharedPreferences.loadUSerCredential(), q,
-                        OPTIONS.SORT_TYPE.param as String, OPTIONS.ORDER.param,
-                        OPTIONS.PER_PAGE.param as Int, page + page).observeOn(Schedulers.newThread()),
-                BiFunction<SearchRepoResponse, SearchRepoResponse, SearchRepoResponse> { t1, t2 ->
-                    t1.items.addAll(t2.items)
-                     t1
-                }
-        )
-    }
 
     override fun query(specification: Specification) {
         when (specification) {
-            is BaseNetworkSpecification -> specification.load(createRepositoryObservable(),
-                    if (loadMore) specification.getMoreObserver(callback) else specification.getObserver(callback))
+            is GithubNetworkSpecification -> {
+                disposables.add(specification.getQuery()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribeWith(object : DisposableObserver<SearchRepoResponse>() {
+                            override fun onNext(t: SearchRepoResponse) {
+                                callback.onSuccess(t, specification.loadMore)
+                            }
+
+                            override fun onError(e: Throwable) {
+                                callback.onFailure(e)
+                            }
+
+                            override fun onComplete() {
+
+                            }
+                        }))
+                specification.lastPage = specification.page
+            }
         }
     }
 
-    enum class OPTIONS(val param: Any) {
-        SORT_TYPE("stars"),
-        ORDER("desc"),
-        PER_PAGE(15)
+    fun stopSearch(specification: Specification) {
+        when (specification) {
+            is GithubNetworkSpecification -> {
+                if (disposables.size() != 0) {
+                    disposables.clear()
+                }
+            }
+        }
     }
+
 
 }
