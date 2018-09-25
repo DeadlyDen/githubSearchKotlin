@@ -49,9 +49,7 @@ class MainPresenter @Inject constructor(router: MainRouter,val githubRepository:
                 .distinctUntilChanged()
                 .subscribe({ charSequence ->
                     mvpView?.showProgressBar()
-                    specification.loadMore = false
-                    specification.page = 1
-                    specification.lastPage = 0
+                    clearSearch()
                     specification.q = charSequence.toString()
                     contentRecyclerAdapter.clearData()
                     githubRepository.query(specification)
@@ -101,5 +99,12 @@ class MainPresenter @Inject constructor(router: MainRouter,val githubRepository:
     fun stopSearch() {
         githubRepository.stopSearch(specification)
         mvpView?.hideProgressBar()
+    }
+
+    fun clearSearch() {
+        specification.loadMore = false
+        specification.page = 1
+        specification.lastPage = 0
+        contentRecyclerAdapter.clearData()
     }
 }

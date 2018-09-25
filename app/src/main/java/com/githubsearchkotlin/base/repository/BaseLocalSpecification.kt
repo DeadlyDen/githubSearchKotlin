@@ -1,5 +1,7 @@
 package com.githubsearchkotlin.base.repository
 
-interface BasekLocalSpecification : Specification {
+import io.reactivex.Observable
 
+interface BasekLocalSpecification<T> : Specification {
+    fun getQuery() : Observable<T>
 }

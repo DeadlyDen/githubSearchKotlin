@@ -3,6 +3,7 @@ package com.githubsearchkotlin.presentation.di.app
 import com.githubsearchkotlin.App
 import com.githubsearchkotlin.presentation.di.login.module.LoginBindModule
 import com.githubsearchkotlin.presentation.di.main.module.MainBindModule
+import com.githubsearchkotlin.presentation.di.recent.module.RecentBindModule
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
@@ -15,6 +16,7 @@ import javax.inject.Singleton
     DataModule::class,
     LoginBindModule::class,
     MainBindModule::class,
+    RecentBindModule::class,
     AndroidInjectionModule::class,
     AndroidSupportInjectionModule::class
 ])

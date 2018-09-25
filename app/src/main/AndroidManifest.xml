@@ -17,7 +17,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".presentation.ui.activities.login.LoginActivity"
-            android:theme="@style/AppTheme.Dark">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -28,6 +29,10 @@
             android:name=".presentation.ui.activities.main.MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".presentation.ui.activities.recent.RecentActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            />
     </application>
 
 </manifest>

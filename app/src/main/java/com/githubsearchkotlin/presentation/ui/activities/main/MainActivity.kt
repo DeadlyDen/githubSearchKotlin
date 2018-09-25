@@ -21,6 +21,7 @@ import com.githubsearchkotlin.R
 import com.githubsearchkotlin.base.viper.HideShowContentView
 import com.githubsearchkotlin.base.viper.View
 import com.githubsearchkotlin.presentation.ui.activities.BaseActivity
+import com.githubsearchkotlin.presentation.ui.activities.recent.RecentActivity
 import com.githubsearchkotlin.presentation.ui.routing.MainRouter
 import com.githubsearchkotlin.presentation.ui.utils.EndlessRecyclerViewScrollListener
 import javax.inject.Inject
@@ -94,12 +95,13 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_recent -> {
-//                startActivity(Intent(this, RecentSearchActivity::class.java))
+                startActivity(Intent(this, RecentActivity::class.java))
                 drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }
             R.id.nav_clear -> {
-//                clearDataInRecyclerAdapter()
+                searchView.setQuery("", false)
+                mainPresenter.clearSearch()
                 drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }

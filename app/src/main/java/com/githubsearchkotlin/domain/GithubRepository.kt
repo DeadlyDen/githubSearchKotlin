@@ -42,6 +42,24 @@ class GithubRepository : BaseRepository {
                         }))
                 specification.lastPage = specification.page
             }
+            is GithubLocalSpecification -> {
+                disposables.add(specification.getQuery()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribeWith(object : DisposableObserver<SearchRepoResponse>() {
+                            override fun onNext(t: SearchRepoResponse) {
+                                callback.onSuccess(t, false)
+                            }
+
+                            override fun onError(e: Throwable) {
+                                callback.onFailure(e)
+                            }
+
+                            override fun onComplete() {
+
+                            }
+                        }))
+            }
         }
     }
 

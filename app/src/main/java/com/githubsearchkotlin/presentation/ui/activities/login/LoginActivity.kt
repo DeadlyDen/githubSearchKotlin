@@ -3,6 +3,7 @@ package com.githubsearchkotlin.presentation.ui.activities.login
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.view.WindowManager
 import android.widget.*
 import butterknife.BindView
 import butterknife.ButterKnife
@@ -13,6 +14,7 @@ import com.githubsearchkotlin.base.viper.View
 import com.githubsearchkotlin.data.model.UserResponse
 import com.githubsearchkotlin.presentation.ui.activities.BaseActivity
 import com.githubsearchkotlin.presentation.ui.activities.main.MainActivity
+import com.githubsearchkotlin.presentation.ui.activities.recent.RecentActivity
 import com.githubsearchkotlin.presentation.ui.routing.LoginRouter
 import com.githubsearchkotlin.presentation.ui.utils.TextInputValidator
 import java.util.*
@@ -44,6 +46,7 @@ class LoginActivity : BaseActivity(), LoginView, LoginRouter {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         ButterKnife.bind(this)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
 
         loginPresenter.attachView(this)
     }
@@ -55,6 +58,12 @@ class LoginActivity : BaseActivity(), LoginView, LoginRouter {
             showLoading()
             loginPresenter.login(email.text.toString(), password.text.toString())
         }
+    }
+
+    @OnClick(R.id.guset_sign_in_button)
+    fun recent() {
+        startActivity(Intent(this, RecentActivity::class.java))
+        finish()
     }
 
     override fun starSearchRepoActivity(userResponse: UserResponse) {
