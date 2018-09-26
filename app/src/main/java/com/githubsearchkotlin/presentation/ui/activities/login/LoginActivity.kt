@@ -63,7 +63,6 @@ class LoginActivity : BaseActivity(), LoginView, LoginRouter {
     @OnClick(R.id.guset_sign_in_button)
     fun recent() {
         startActivity(Intent(this, RecentActivity::class.java))
-        finish()
     }
 
     override fun starSearchRepoActivity(userResponse: UserResponse) {

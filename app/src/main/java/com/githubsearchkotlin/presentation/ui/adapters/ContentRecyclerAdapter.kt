@@ -4,13 +4,17 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import com.githubsearchkotlin.presentation.ui.holders.ViewHolderManager
+import com.githubsearchkotlin.presentation.ui.utils.ItemTouchHelperAdapter
+import java.util.*
 
-class ContentRecyclerAdapter<T>(val context: Context, holderType: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+class ContentRecyclerAdapter<T>(val context: Context, holderType: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>(), ItemTouchHelperAdapter {
 
     var items: ArrayList<T> = ArrayList()
 
-    lateinit var contentRecycleOnClick: ContentRecycleOnClick
-    lateinit var contentRecycleOnLongClick: ContentRecycleOnLongClick
+    var contentRecycleOnClick: ContentRecycleOnClick? = null
+    var contentRecycleOnLongClick: ContentRecycleOnLongClick? = null
+    var contentRecycleOnMove: ContentRecycleOnMove? = null
 
     private var viewHolderManager: ViewHolderManager? = null
 
@@ -63,4 +67,22 @@ class ContentRecyclerAdapter<T>(val context: Context, holderType: Int) : Recycle
         }
     }
 
+    override fun onItemMove(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(items, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(items, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
+        contentRecycleOnMove?.onItemMove()
+    }
+
+    override fun onItemDismiss(position: Int) {
+        contentRecycleOnMove?.onItemDismiss(position)
+        deleteItem(position)
+    }
 }

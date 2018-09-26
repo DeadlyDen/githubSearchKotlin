@@ -28,8 +28,9 @@ class ViewHolderManager(val holderType: Int, val context: Context, val contentRe
                 val itemRepo = item as RepositoryItem
                 searchRepoViewHolder.item = itemRepo
                 searchRepoViewHolder.initData(context)
-                searchRepoViewHolder.itemView.setOnClickListener { view -> contentRecyclerAdapter.contentRecycleOnClick.onClickItem(position, view.id, view) }
-                searchRepoViewHolder.itemView.setOnLongClickListener { view -> contentRecyclerAdapter.contentRecycleOnLongClick.OnLongClickItem(position, view.id, view) }
+                searchRepoViewHolder.itemView.setOnClickListener { view -> contentRecyclerAdapter.contentRecycleOnClick?.onClickItem(position, view.id, view) }
+                searchRepoViewHolder.itemView.setOnLongClickListener { view ->
+                    if (contentRecyclerAdapter.contentRecycleOnLongClick != null) contentRecyclerAdapter.contentRecycleOnLongClick!!.OnLongClickItem(position, view.id, view) else false }
                 if (itemRepo.isViewed) {
                     searchRepoViewHolder.viewedStatus.visibility = View.VISIBLE
                     searchRepoViewHolder.viewedStatus.text = context.getString(R.string.viewed)

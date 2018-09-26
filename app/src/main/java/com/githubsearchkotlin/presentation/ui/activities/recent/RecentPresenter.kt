@@ -1,6 +1,7 @@
 package com.githubsearchkotlin.presentation.ui.activities.recent
 
 import android.content.Context
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
 import com.githubsearchkotlin.base.repository.GithubLocalSpecification
 import com.githubsearchkotlin.base.repository.RepositoryCallBack
@@ -11,13 +12,16 @@ import com.githubsearchkotlin.data.model.SearchRepoResponse
 import com.githubsearchkotlin.domain.GithubRepository
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnClick
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnLongClick
+import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnMove
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecyclerAdapter
 import com.githubsearchkotlin.presentation.ui.holders.ViewHolderManager
 import com.githubsearchkotlin.presentation.ui.routing.RecentRouter
+import com.githubsearchkotlin.presentation.ui.utils.ItemTouchHelperAdapter
 import javax.inject.Inject
 
 class RecentPresenter @Inject constructor(router: RecentRouter, val githubRepository: GithubRepository,
-                                          val specification: GithubLocalSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<RecentView, RecentRouter>(), RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick, ContentRecycleOnLongClick {
+                                          val specification: GithubLocalSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<RecentView, RecentRouter>(),
+        RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick, ContentRecycleOnMove{
 
     private var contentRecyclerAdapter: ContentRecyclerAdapter<RepositoryItem>
 
@@ -31,9 +35,8 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubReposi
     override fun attachView(mvpView: RecentView) {
         super.attachView(mvpView)
         contentRecyclerAdapter.contentRecycleOnClick = this
-        contentRecyclerAdapter.contentRecycleOnLongClick = this
+        contentRecyclerAdapter.contentRecycleOnMove = this
         mvpView.initRecyclerData(contentRecyclerAdapter)
-        mvpView.showProgressBar()
         githubRepository.query(specification)
     }
 
@@ -43,7 +46,6 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubReposi
 
     override fun onSuccess(model: SearchRepoResponse, onMore: Boolean) {
         contentRecyclerAdapter.uploadItems(model.items)
-        mvpView?.hideProgressBar()
     }
 
     override fun onFailure(throwable: Throwable) {
@@ -55,11 +57,12 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubReposi
         router?.startBrowserActivity(item.url)
     }
 
-    override fun OnLongClickItem(position: Int, id: Int, v: View): Boolean {
+    override fun onItemMove() {
+        contentRecyclerAdapter.items.forEachIndexed { index, repositoryItem -> databaseHelper.updatePositionRecentSearchItem(repositoryItem.id, index) }
+    }
+
+    override fun onItemDismiss(position: Int) {
         val item: RepositoryItem = contentRecyclerAdapter.getItem(position)
-        databaseHelper.deleteRepositoryItem(item.id).run {
-            contentRecyclerAdapter.deleteItem(position)
-        }
-        return true
+        databaseHelper.deleteRepositoryItem(item.id)
     }
 }

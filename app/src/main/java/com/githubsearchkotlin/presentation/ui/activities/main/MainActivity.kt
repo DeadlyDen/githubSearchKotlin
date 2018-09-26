@@ -20,10 +20,12 @@ import com.github.ybq.android.spinkit.SpinKitView
 import com.githubsearchkotlin.R
 import com.githubsearchkotlin.base.viper.HideShowContentView
 import com.githubsearchkotlin.base.viper.View
+import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
 import com.githubsearchkotlin.presentation.ui.activities.BaseActivity
-import com.githubsearchkotlin.presentation.ui.activities.recent.RecentActivity
+import com.githubsearchkotlin.presentation.ui.activities.login.LoginActivity
 import com.githubsearchkotlin.presentation.ui.routing.MainRouter
 import com.githubsearchkotlin.presentation.ui.utils.EndlessRecyclerViewScrollListener
+import com.githubsearchkotlin.presentation.ui.utils.UiUtils
 import javax.inject.Inject
 
 
@@ -52,6 +54,8 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
     lateinit var progressBar: SpinKitView
     @Inject
     lateinit var mainPresenter: MainPresenter
+    @Inject
+    lateinit var preferencesHelper: PreferencesHelper
 
     private var mBackPressed: Long = 0
     private var linearLayoutManager = LinearLayoutManager(this)
@@ -94,15 +98,17 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.nav_recent -> {
-                startActivity(Intent(this, RecentActivity::class.java))
-                drawerLayout.closeDrawer(GravityCompat.START)
-                return true
-            }
             R.id.nav_clear -> {
                 searchView.setQuery("", false)
                 mainPresenter.clearSearch()
                 drawerLayout.closeDrawer(GravityCompat.START)
+                return true
+            }
+            R.id.nav_logout -> {
+                preferencesHelper.clearUserCredential()
+                UiUtils.closeKeyboard(this)
+                startActivity(Intent(this, LoginActivity::class.java))
+                finish()
                 return true
             }
             else -> return false

@@ -85,9 +85,9 @@ class MainPresenter @Inject constructor(router: MainRouter,val githubRepository:
     override fun onClickItem(position: Int, id: Int, v: View) {
         val item: RepositoryItem = contentRecyclerAdapter.getItem(position)
         if (!item.isViewed) {
-            databaseHelper.saveRepositoryItemPOJO(contentRecyclerAdapter.items[position])
-            router?.startBrowserActivity(item.url)
             item.isViewed = true
+            databaseHelper.saveRepositoryItemPOJO(contentRecyclerAdapter.items[position], position)
+            router?.startBrowserActivity(item.url)
             contentRecyclerAdapter.updateItem(item, position)
         } else {
             databaseHelper.getRecentSearchUrl(item.id)?.let {

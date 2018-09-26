@@ -22,7 +22,7 @@ class PreferencesHelper @Inject constructor(context: Context) {
         return sharedPreferences.getString(USER_CREDENTIAL, null)
     }
 
-    fun clearUSerCredential() {
+    fun clearUserCredential() {
         sharedPreferences.edit().remove(USER_CREDENTIAL).apply()
     }
 }
