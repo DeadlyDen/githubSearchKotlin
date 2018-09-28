@@ -16,6 +16,7 @@ import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnClick
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecyclerAdapter
 import com.githubsearchkotlin.presentation.ui.holders.ViewHolderManager
 import com.githubsearchkotlin.presentation.ui.routing.MainRouter
+import com.githubsearchkotlin.presentation.ui.utils.RxBus
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
