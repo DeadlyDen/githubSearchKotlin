@@ -71,10 +71,12 @@ class MainPresenter @Inject constructor(router: MainRouter,val githubRepository:
             if (model.items.isEmpty()) {
                 mvpView?.hideProgressBar()
                 contentRecyclerAdapter.clearData()
+                mvpView?.showEmptyView()
                 return
             }
             contentRecyclerAdapter.uploadItems(model.items)
             mvpView?.hideProgressBar()
+            mvpView?.hideEmptyView()
         }
     }
 
@@ -106,5 +108,6 @@ class MainPresenter @Inject constructor(router: MainRouter,val githubRepository:
         specification.page = 1
         specification.lastPage = 0
         contentRecyclerAdapter.clearData()
+        mvpView?.showEmptyView()
     }
 }

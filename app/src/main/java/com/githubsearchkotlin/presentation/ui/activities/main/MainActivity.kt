@@ -3,6 +3,7 @@ package com.githubsearchkotlin.presentation.ui.activities.main
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v4.widget.DrawerLayout
@@ -34,6 +35,8 @@ interface MainView : View, HideShowContentView {
     fun initRecyclerData(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>)
     fun showProgressBar()
     fun hideProgressBar()
+    fun showEmptyView()
+    fun hideEmptyView()
 }
 
 class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +55,8 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
     lateinit var navigationView: NavigationView
     @BindView(R.id.spin_kit_more)
     lateinit var progressBar: SpinKitView
+    @BindView(R.id.empty_view)
+    lateinit var emptyView: ConstraintLayout
     @Inject
     lateinit var mainPresenter: MainPresenter
     @Inject
@@ -68,6 +73,7 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
         initToolBar()
         mainPresenter.attachView(this)
         mainPresenter.subscribeSearchView(searchView)
+        showEmptyView()
     }
 
     private fun initToolBar() {
@@ -131,6 +137,14 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
 
     override fun hideProgressBar() {
         progressBar.visibility = android.view.View.GONE
+    }
+
+    override fun showEmptyView() {
+        emptyView.visibility =  android.view.View.VISIBLE
+    }
+
+    override fun hideEmptyView() {
+        emptyView.visibility =  android.view.View.GONE
     }
 
     override fun onBackPressed() {

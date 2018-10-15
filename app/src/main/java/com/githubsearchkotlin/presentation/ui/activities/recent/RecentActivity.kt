@@ -3,6 +3,7 @@ package com.githubsearchkotlin.presentation.ui.activities.recent
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -19,12 +20,16 @@ import javax.inject.Inject
 
 interface RecentView : View, HideShowContentView {
     fun initRecyclerData(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>)
+    fun showEmptyView()
+    fun hideEmptyView()
 }
 
 class RecentActivity : BaseActivity(), RecentView, RecentRouter {
 
     @BindView(R.id.recycler_view)
     lateinit var recyclerView: RecyclerView
+    @BindView(R.id.empty_view)
+    lateinit var emptyView: ConstraintLayout
 
     @Inject
     lateinit var recentPresenter: RecentPresenter
@@ -52,6 +57,14 @@ class RecentActivity : BaseActivity(), RecentView, RecentRouter {
 
     override fun startBrowserActivity(url: String) {
         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
+    override fun showEmptyView() {
+        emptyView.visibility =  android.view.View.VISIBLE
+    }
+
+    override fun hideEmptyView() {
+        emptyView.visibility =  android.view.View.GONE
     }
 
     override fun onBackPressed() {

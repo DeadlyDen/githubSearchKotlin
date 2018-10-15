@@ -45,7 +45,11 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubReposi
     }
 
     override fun onSuccess(model: SearchRepoResponse, onMore: Boolean) {
+        if (model.items.isEmpty()) {
+            mvpView?.showEmptyView()
+        }
         contentRecyclerAdapter.uploadItems(model.items)
+
     }
 
     override fun onFailure(throwable: Throwable) {

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     android:animateLayoutChanges="true"
+    android:background="@color/colorWhite"
     tools:showIn="@layout/app_bar">
 
     <android.support.v7.widget.RecyclerView
@@ -29,5 +30,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginBottom="5sp"
         />
+
+    <include layout="@layout/empty_view" />
 
 </android.support.constraint.ConstraintLayout>
