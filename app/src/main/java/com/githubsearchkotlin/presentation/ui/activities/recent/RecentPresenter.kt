@@ -1,7 +1,6 @@
 package com.githubsearchkotlin.presentation.ui.activities.recent
 
 import android.content.Context
-import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
 import com.githubsearchkotlin.base.repository.GithubLocalSpecification
 import com.githubsearchkotlin.base.repository.RepositoryCallBack
@@ -11,12 +10,10 @@ import com.githubsearchkotlin.data.model.RepositoryItem
 import com.githubsearchkotlin.data.model.SearchRepoResponse
 import com.githubsearchkotlin.domain.GithubRepository
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnClick
-import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnLongClick
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnMove
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecyclerAdapter
 import com.githubsearchkotlin.presentation.ui.holders.ViewHolderManager
 import com.githubsearchkotlin.presentation.ui.routing.RecentRouter
-import com.githubsearchkotlin.presentation.ui.utils.ItemTouchHelperAdapter
 import com.githubsearchkotlin.presentation.ui.utils.RxBus
 import javax.inject.Inject
 

@@ -6,10 +6,8 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.TextView
 import butterknife.BindView
-import butterknife.ButterKnife
 import com.githubsearchkotlin.R
 import com.githubsearchkotlin.base.viper.HideShowContentView
-import com.githubsearchkotlin.presentation.ui.utils.RxBus
 import dagger.android.support.DaggerAppCompatActivity
 import dagger.android.support.HasSupportFragmentInjector
 import io.reactivex.annotations.Nullable
@@ -27,7 +25,6 @@ abstract class BaseActivity : DaggerAppCompatActivity(), HasSupportFragmentInjec
 
     override fun onDestroy() {
         super.onDestroy()
-        RxBus.unregister(this)
     }
 
     override fun showLoading() {
