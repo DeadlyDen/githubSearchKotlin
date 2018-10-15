@@ -17,6 +17,7 @@ import com.githubsearchkotlin.presentation.ui.adapters.ContentRecyclerAdapter
 import com.githubsearchkotlin.presentation.ui.holders.ViewHolderManager
 import com.githubsearchkotlin.presentation.ui.routing.RecentRouter
 import com.githubsearchkotlin.presentation.ui.utils.ItemTouchHelperAdapter
+import com.githubsearchkotlin.presentation.ui.utils.RxBus
 import javax.inject.Inject
 
 class RecentPresenter @Inject constructor(router: RecentRouter, val githubRepository: GithubRepository,
@@ -68,5 +69,6 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubReposi
     override fun onItemDismiss(position: Int) {
         val item: RepositoryItem = contentRecyclerAdapter.getItem(position)
         databaseHelper.deleteRepositoryItem(item.id)
+        RxBus.publish(RxBus.UPDATE_REPOSITORY_ITEM, item.id)
     }
 }
