@@ -3,6 +3,7 @@ package com.githubsearchkotlin.data.network
 import com.githubsearchkotlin.data.model.SearchRepoResponse
 import com.githubsearchkotlin.data.model.UserResponse
 import io.reactivex.Observable
+import kotlinx.coroutines.experimental.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
@@ -24,7 +25,7 @@ interface RepoSearchApiService  {
     fun searchRepo(@Header("Authorization")  authorization : String,
                    @Query("q")  q : String, @Query("sort")  sort : String,
                    @Query("order")  order : String, @Query("per_page")  per : Int,
-                   @Query("page") page : Int) : Observable<SearchRepoResponse>
+                   @Query("page") page : Int) : Deferred<SearchRepoResponse>
 }
 
 

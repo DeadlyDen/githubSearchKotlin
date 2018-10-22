@@ -1,13 +1,10 @@
 package com.githubsearchkotlin.presentation.di.app
 
 import com.githubsearchkotlin.BuildConfig
-import com.githubsearchkotlin.base.repository.BaseNetworkSpecification
-import com.githubsearchkotlin.base.repository.GithubNetworkSpecification
-import com.githubsearchkotlin.data.local.DatabaseHelper
-import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
 import com.githubsearchkotlin.data.network.ApiService
 import com.githubsearchkotlin.data.network.RepoSearchApiService
-import com.githubsearchkotlin.domain.GithubRepository
+import com.githubsearchkotlin.domain.GithubNetworkRepositoryItemImpl
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -55,8 +52,8 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideGithubRepository() : GithubRepository {
-        return GithubRepository()
+    fun provideGithubRepository() : GithubNetworkRepositoryItemImpl {
+        return GithubNetworkRepositoryItemImpl()
     }
 
 
@@ -69,6 +66,7 @@ class NetworkModule {
         }
         builder.addConverterFactory(GsonConverterFactory.create())
         builder.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+        builder.addCallAdapterFactory(CoroutineCallAdapterFactory())
         return builder
     }
 

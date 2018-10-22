@@ -4,6 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 def dbflow_version = '4.2.4'
+def coroutines_version = '0.30.2'
 
 android {
     compileSdkVersion 27
@@ -25,6 +26,12 @@ android {
 
 kapt {
     generateStubs = true
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
 }
 
 dependencies {
@@ -73,5 +80,10 @@ dependencies {
     implementation "com.github.Raizlabs.DBFlow:dbflow-rx2:${dbflow_version}"
     implementation "com.github.Raizlabs.DBFlow:dbflow-rx2-kotlinextensions:${dbflow_version}"
     implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
+    implementation 'com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2'
+
 
 }
+

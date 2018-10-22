@@ -1,5 +1,7 @@
 package com.githubsearchkotlin.base.repository
 
-interface BaseRepository {
-    fun query(specification: Specification)
+import com.githubsearchkotlin.data.model.BaseModel
+
+interface BaseRepository<R, out T : BaseModel> {
+    fun query(specification: Specification<R>) : List<T>
 }

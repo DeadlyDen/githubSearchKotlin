@@ -1,6 +1,5 @@
 package com.githubsearchkotlin.base.repository
 
-
-interface BaseNetworkSpecification<R> : Specification<R> {
+interface BaseORMSpecification<R> : Specification<R> {
     fun query() : R
 }

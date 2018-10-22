@@ -2,13 +2,13 @@ package com.githubsearchkotlin.presentation.ui.activities.recent
 
 import android.content.Context
 import android.view.View
-import com.githubsearchkotlin.base.repository.GithubLocalSpecification
+import com.githubsearchkotlin.domain.specification.GithubORMSpecification
 import com.githubsearchkotlin.base.repository.RepositoryCallBack
 import com.githubsearchkotlin.base.viper.BasePresenter
 import com.githubsearchkotlin.data.local.DatabaseHelper
 import com.githubsearchkotlin.data.model.RepositoryItem
 import com.githubsearchkotlin.data.model.SearchRepoResponse
-import com.githubsearchkotlin.domain.GithubRepository
+import com.githubsearchkotlin.domain.GithubNetworkRepositoryItemImpl
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnClick
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnMove
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecyclerAdapter
@@ -17,15 +17,15 @@ import com.githubsearchkotlin.presentation.ui.routing.RecentRouter
 import com.githubsearchkotlin.presentation.ui.utils.RxBus
 import javax.inject.Inject
 
-class RecentPresenter @Inject constructor(router: RecentRouter, val githubRepository: GithubRepository,
-                                          val specification: GithubLocalSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<RecentView, RecentRouter>(),
+class RecentPresenter @Inject constructor(router: RecentRouter, val githubNetworkRepositoryItemImpl: GithubNetworkRepositoryItemImpl,
+                                          val specification: GithubORMSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<RecentView, RecentRouter>(),
         RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick, ContentRecycleOnMove{
 
     private var contentRecyclerAdapter: ContentRecyclerAdapter<RepositoryItem>
 
     init {
         this@RecentPresenter.router = router
-        githubRepository.callback = this
+        githubNetworkRepositoryItemImpl.callback = this
         contentRecyclerAdapter = ContentRecyclerAdapter(router as Context, ViewHolderManager.SEARCH_REPO)
     }
 
@@ -35,7 +35,7 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubReposi
         contentRecyclerAdapter.contentRecycleOnClick = this
         contentRecyclerAdapter.contentRecycleOnMove = this
         mvpView.initRecyclerData(contentRecyclerAdapter)
-        githubRepository.query(specification)
+        githubNetworkRepositoryItemImpl.query(specification)
     }
 
     override fun detachView() {

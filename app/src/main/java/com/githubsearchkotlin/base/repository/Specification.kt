@@ -1,4 +1,4 @@
 package com.githubsearchkotlin.base.repository
 
-interface Specification {
+interface Specification<R> {
 }
