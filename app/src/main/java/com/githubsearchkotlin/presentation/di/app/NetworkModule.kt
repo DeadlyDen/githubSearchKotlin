@@ -4,7 +4,7 @@ import com.githubsearchkotlin.BuildConfig
 import com.githubsearchkotlin.data.network.ApiService
 import com.githubsearchkotlin.data.network.RepoSearchApiService
 import com.githubsearchkotlin.domain.GithubNetworkRepositoryItemImpl
-import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
+import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient

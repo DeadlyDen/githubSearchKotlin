@@ -25,7 +25,7 @@ interface RepoSearchApiService  {
     fun searchRepo(@Header("Authorization")  authorization : String,
                    @Query("q")  q : String, @Query("sort")  sort : String,
                    @Query("order")  order : String, @Query("per_page")  per : Int,
-                   @Query("page") page : Int) : Deferred<SearchRepoResponse>
+                   @Query("page") page : Int) : Observable<SearchRepoResponse>
 }
 
 

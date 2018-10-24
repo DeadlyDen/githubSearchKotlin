@@ -22,13 +22,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainPresenter  @Inject constructor(router: MainRouter, val githubNetworkRepositoryItemImpl: GithubNetworkRepositoryItemImpl,
-                                        val specification: GithubItemsSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<MainView, MainRouter>(), RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick {
+                                        val specification: GithubItemsSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<MainView, MainRouter>(), ContentRecycleOnClick {
 
     private var contentRecyclerAdapter: ContentRecyclerAdapter<RepositoryItem>
 
     init {
         this@MainPresenter.router = router
-        githubNetworkRepositoryItemImpl.callback = this
         contentRecyclerAdapter = ContentRecyclerAdapter(router as Context, ViewHolderManager.SEARCH_REPO)
     }
 
@@ -52,7 +51,7 @@ class MainPresenter  @Inject constructor(router: MainRouter, val githubNetworkRe
                     clearSearch()
                     specification.q = charSequence.toString()
                     contentRecyclerAdapter.clearData()
-                    githubNetworkRepositoryItemImpl.query(specification)
+                    onSuccess(githubNetworkRepositoryItemImpl.query(specification), false)
                 }, { throwable -> Log.v("Error search : ", throwable.toString()) })
     }
 
@@ -63,24 +62,24 @@ class MainPresenter  @Inject constructor(router: MainRouter, val githubNetworkRe
         githubNetworkRepositoryItemImpl.query(specification)
     }
 
-    override fun onSuccess(model: SearchRepoResponse, onMore: Boolean) {
+    fun onSuccess(items: List<RepositoryItem>, onMore: Boolean) {
         if (onMore) {
-            contentRecyclerAdapter.uploadItems(model.items)
+            contentRecyclerAdapter.uploadItems(items)
             mvpView?.hideProgressBar()
         } else {
-            if (model.items.isEmpty()) {
+            if (items.isEmpty()) {
                 mvpView?.hideProgressBar()
                 contentRecyclerAdapter.clearData()
                 mvpView?.showEmptyView()
                 return
             }
-            contentRecyclerAdapter.uploadItems(model.items)
+            contentRecyclerAdapter.uploadItems(items)
             mvpView?.hideProgressBar()
             mvpView?.hideEmptyView()
         }
     }
 
-    override fun onFailure(throwable: Throwable) {
+     fun onFailure(throwable: Throwable) {
 
     }
 

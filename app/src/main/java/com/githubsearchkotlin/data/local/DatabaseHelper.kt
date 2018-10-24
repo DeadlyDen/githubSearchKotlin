@@ -33,10 +33,10 @@ class DatabaseHelper(context: Context, preferencesHelper: PreferencesHelper) {
         Delete().from(RepositoryItemDB::class.java).async().execute()
     }
 
-    fun getRepositoryItems() : SearchRepoResponse {
+    fun getRepositoryItems() : Observable<SearchRepoResponse> {
         val items: ArrayList<RepositoryItem> = ArrayList()
         Select().from(RepositoryItemDB::class.java).orderBy(RepositoryItemDB_Table.position, true).queryList().forEach { item -> items.add(item.toPOJO()) }
-        return SearchRepoResponse(items)
+        return Observable.just(SearchRepoResponse(items))
     }
 
     fun getResentSearchRepoId(): ArrayList<Int> {

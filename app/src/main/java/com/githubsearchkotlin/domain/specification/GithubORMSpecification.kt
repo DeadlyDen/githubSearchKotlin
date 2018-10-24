@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class GithubORMSpecification @Inject constructor(var databaseHelper: DatabaseHelper) : BaseORMSpecification<SearchRepoResponse> {
 
-    override fun query(): SearchRepoResponse {
+    override fun query(): Observable<SearchRepoResponse> {
       return databaseHelper.getRepositoryItems()
     }
 
