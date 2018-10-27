@@ -6,7 +6,6 @@ import com.githubsearchkotlin.base.repository.RepositoryCallBack
 import com.githubsearchkotlin.base.repository.Specification
 import com.githubsearchkotlin.data.model.SearchRepoResponse
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
 
@@ -14,7 +13,7 @@ class GithubNetworkRepositoryItemImpl : BaseRepository<SearchRepoResponse> {
 
     lateinit var callback: RepositoryCallBack<SearchRepoResponse>
 
-    private var disposables: CompositeDisposable = CompositeDisposable()
+    var onMore: Boolean = false
 
     override fun query(specification: Specification<SearchRepoResponse>) {
         val baseNetworkSpecification: BaseNetworkSpecification<SearchRepoResponse> = specification as BaseNetworkSpecification<SearchRepoResponse>
@@ -23,7 +22,7 @@ class GithubNetworkRepositoryItemImpl : BaseRepository<SearchRepoResponse> {
                         .subscribeOn(Schedulers.io())
                         .subscribeWith(object : DisposableObserver<SearchRepoResponse>() {
                             override fun onNext(t: SearchRepoResponse) {
-                                callback.onSuccess(t, false)
+                                callback.onSuccess(t, onMore)
                             }
 
                             override fun onError(e: Throwable) {
@@ -34,7 +33,6 @@ class GithubNetworkRepositoryItemImpl : BaseRepository<SearchRepoResponse> {
 
                             }
                         }))
-//                specification.lastPage = specification.page
     }
 
 }

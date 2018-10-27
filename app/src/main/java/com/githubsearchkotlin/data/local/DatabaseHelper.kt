@@ -25,6 +25,10 @@ class DatabaseHelper(context: Context, preferencesHelper: PreferencesHelper) {
         RepositoryItemDB(repositoryItem.id, repositoryItem.name, repositoryItem.url, repositoryItem.isViewed, position).save()
     }
 
+    fun clearRepositoryItemsTable() {
+        Delete.table(RepositoryItemDB_Table::class.java)
+    }
+
     fun deleteRepositoryItem(id: Int) {
         Delete().from(RepositoryItemDB::class.java).where(RepositoryItemDB_Table.id.`is`(id)).execute()
     }

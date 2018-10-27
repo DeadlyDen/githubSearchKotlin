@@ -22,12 +22,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class MainPresenter  @Inject constructor(router: MainRouter, val githubNetworkRepositoryItemImpl: GithubNetworkRepositoryItemImpl,
-                                        val specification: GithubItemsSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<MainView, MainRouter>(), ContentRecycleOnClick {
+                                        val specification: GithubItemsSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<MainView, MainRouter>(), RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick {
 
     private var contentRecyclerAdapter: ContentRecyclerAdapter<RepositoryItem>
 
     init {
         this@MainPresenter.router = router
+        githubNetworkRepositoryItemImpl.callback = this
         contentRecyclerAdapter = ContentRecyclerAdapter(router as Context, ViewHolderManager.SEARCH_REPO)
     }
 
@@ -51,35 +52,36 @@ class MainPresenter  @Inject constructor(router: MainRouter, val githubNetworkRe
                     clearSearch()
                     specification.q = charSequence.toString()
                     contentRecyclerAdapter.clearData()
-                    onSuccess(githubNetworkRepositoryItemImpl.query(specification), false)
+                    githubNetworkRepositoryItemImpl.onMore = false
+                    githubNetworkRepositoryItemImpl.query(specification)
                 }, { throwable -> Log.v("Error search : ", throwable.toString()) })
     }
 
     fun loadMore(page: Int) {
         mvpView?.showProgressBar()
-        specification.loadMore = true
+        githubNetworkRepositoryItemImpl.onMore = true
         specification.page = page
         githubNetworkRepositoryItemImpl.query(specification)
     }
 
-    fun onSuccess(items: List<RepositoryItem>, onMore: Boolean) {
+    override fun onSuccess(model: SearchRepoResponse, onMore: Boolean) {
         if (onMore) {
-            contentRecyclerAdapter.uploadItems(items)
+            contentRecyclerAdapter.uploadItems(model.items)
             mvpView?.hideProgressBar()
         } else {
-            if (items.isEmpty()) {
+            if (model.items.isEmpty()) {
                 mvpView?.hideProgressBar()
                 contentRecyclerAdapter.clearData()
                 mvpView?.showEmptyView()
                 return
             }
-            contentRecyclerAdapter.uploadItems(items)
+            contentRecyclerAdapter.uploadItems(model.items)
             mvpView?.hideProgressBar()
             mvpView?.hideEmptyView()
         }
     }
 
-     fun onFailure(throwable: Throwable) {
+    override fun onFailure(throwable: Throwable) {
 
     }
 
@@ -103,7 +105,7 @@ class MainPresenter  @Inject constructor(router: MainRouter, val githubNetworkRe
     }
 
     fun clearSearch() {
-        specification.loadMore = false
+        githubNetworkRepositoryItemImpl.onMore = false
         specification.page = 1
         specification.lastPage = 0
         contentRecyclerAdapter.clearData()
