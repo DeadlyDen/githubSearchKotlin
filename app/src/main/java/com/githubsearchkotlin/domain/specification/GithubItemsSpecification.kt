@@ -18,25 +18,24 @@ class GithubItemsSpecification @Inject constructor(var repoSearchApiService: Rep
     var page = 0
     var lastPage = 0
 
-    var recentRepository: ArrayList<Int> = ArrayList()
-
-    init {
-        recentRepository = databaseHelper.getResentSearchRepoId()
-    }
-
     override fun query(): Observable<SearchRepoResponse> {
+        if (sharedPreferences.getFirstSessionState()) {
+            databaseHelper.clearRepositoryItemsTable()
+        }
         return Observable.zip(
                 repoSearchApiService.searchRepo(sharedPreferences.loadUSerCredential(), q,
                         OPTIONS.SORT_TYPE.param as String, OPTIONS.ORDER.param,
                         OPTIONS.PER_PAGE.param as Int, page + lastPage).observeOn(Schedulers.newThread())
-                        .doOnComplete { lastPage = page },
+                        .doOnComplete {
+                            lastPage = page
+                            sharedPreferences.updateFirstSessionState(false)
+                        },
                 repoSearchApiService.searchRepo(sharedPreferences.loadUSerCredential(), q,
                         OPTIONS.SORT_TYPE.param as String, OPTIONS.ORDER.param,
                         OPTIONS.PER_PAGE.param as Int, page + page).observeOn(Schedulers.newThread()),
                 BiFunction<SearchRepoResponse, SearchRepoResponse, SearchRepoResponse> { t1, t2 ->
                     t1.items.addAll(t2.items)
                     t1.items.forEachIndexed { index, repositoryItem ->
-                        repositoryItem.isViewed = true
                         databaseHelper.saveRepositoryItemPOJO(repositoryItem, index)
                     }
                     t1

@@ -8,6 +8,7 @@ import com.githubsearchkotlin.base.viper.BasePresenter
 import com.githubsearchkotlin.data.local.DatabaseHelper
 import com.githubsearchkotlin.data.model.RepositoryItem
 import com.githubsearchkotlin.data.model.SearchRepoResponse
+import com.githubsearchkotlin.domain.GithubLocalRepositoryItemImpl
 import com.githubsearchkotlin.domain.GithubNetworkRepositoryItemImpl
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnClick
 import com.githubsearchkotlin.presentation.ui.adapters.ContentRecycleOnMove
@@ -17,7 +18,7 @@ import com.githubsearchkotlin.presentation.ui.routing.RecentRouter
 import com.githubsearchkotlin.presentation.ui.utils.RxBus
 import javax.inject.Inject
 
-class RecentPresenter @Inject constructor(router: RecentRouter, val githubNetworkRepositoryItemImpl: GithubNetworkRepositoryItemImpl,
+class RecentPresenter @Inject constructor(router: RecentRouter, val githubLocalRepositoryItemImpl: GithubLocalRepositoryItemImpl,
                                           val specification: GithubORMSpecification, val databaseHelper: DatabaseHelper) : BasePresenter<RecentView, RecentRouter>(),
         RepositoryCallBack<SearchRepoResponse>, ContentRecycleOnClick, ContentRecycleOnMove{
 
@@ -25,7 +26,7 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubNetwor
 
     init {
         this@RecentPresenter.router = router
-        githubNetworkRepositoryItemImpl.callback = this
+        githubLocalRepositoryItemImpl.callback = this
         contentRecyclerAdapter = ContentRecyclerAdapter(router as Context, ViewHolderManager.SEARCH_REPO)
     }
 
@@ -35,7 +36,7 @@ class RecentPresenter @Inject constructor(router: RecentRouter, val githubNetwor
         contentRecyclerAdapter.contentRecycleOnClick = this
         contentRecyclerAdapter.contentRecycleOnMove = this
         mvpView.initRecyclerData(contentRecyclerAdapter)
-        githubNetworkRepositoryItemImpl.query(specification)
+        githubLocalRepositoryItemImpl.query(specification)
     }
 
     override fun detachView() {

@@ -3,6 +3,7 @@ package com.githubsearchkotlin.presentation.di.app
 import com.githubsearchkotlin.BuildConfig
 import com.githubsearchkotlin.data.network.ApiService
 import com.githubsearchkotlin.data.network.RepoSearchApiService
+import com.githubsearchkotlin.domain.GithubLocalRepositoryItemImpl
 import com.githubsearchkotlin.domain.GithubNetworkRepositoryItemImpl
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.experimental.CoroutineCallAdapterFactory
 import dagger.Module
@@ -56,6 +57,10 @@ class NetworkModule {
         return GithubNetworkRepositoryItemImpl()
     }
 
+    @Provides
+    fun provideGithubLocalRepository() : GithubLocalRepositoryItemImpl {
+        return GithubLocalRepositoryItemImpl()
+    }
 
     private fun getBuilder(): Retrofit.Builder {
         val builder = Retrofit.Builder()

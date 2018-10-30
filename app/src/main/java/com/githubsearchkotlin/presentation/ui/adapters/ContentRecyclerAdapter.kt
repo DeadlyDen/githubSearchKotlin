@@ -35,7 +35,9 @@ class ContentRecyclerAdapter<T>(val context: Context, holderType: Int) : Recycle
     }
 
     fun updateItems(updatedItems: List<T>) {
-        items.clear()
+        if (items.isNotEmpty()) {
+            items.clear()
+        }
         items.addAll(updatedItems)
         notifyDataSetChanged()
     }

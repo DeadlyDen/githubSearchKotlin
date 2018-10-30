@@ -7,6 +7,9 @@
         <item
             android:id="@+id/nav_clear"
             android:title="@string/clear_data" />
+        <item
+            android:id="@+id/recent"
+            android:title="@string/recent" />
     </group>
 
     <item android:title="">

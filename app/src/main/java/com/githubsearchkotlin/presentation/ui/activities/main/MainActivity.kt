@@ -24,6 +24,7 @@ import com.githubsearchkotlin.base.viper.View
 import com.githubsearchkotlin.data.localPreferencesHelper.PreferencesHelper
 import com.githubsearchkotlin.presentation.ui.activities.BaseActivity
 import com.githubsearchkotlin.presentation.ui.activities.login.LoginActivity
+import com.githubsearchkotlin.presentation.ui.activities.recent.RecentActivity
 import com.githubsearchkotlin.presentation.ui.routing.MainRouter
 import com.githubsearchkotlin.presentation.ui.utils.EndlessRecyclerViewScrollListener
 import com.githubsearchkotlin.presentation.ui.utils.UiUtils
@@ -110,7 +111,12 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
                 drawerLayout.closeDrawer(GravityCompat.START)
                 return true
             }
+            R.id.recent -> {
+                startActivity(Intent(this, RecentActivity::class.java))
+                return true
+            }
             R.id.nav_logout -> {
+                preferencesHelper.updateFirstSessionState(true)
                 preferencesHelper.clearUserCredential()
                 UiUtils.closeKeyboard(this)
                 startActivity(Intent(this, LoginActivity::class.java))
@@ -119,6 +125,11 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
             }
             else -> return false
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mainPresenter.loadRecentSearchItems()
     }
 
     override fun startBrowserActivity(url: String) {
@@ -150,6 +161,7 @@ class MainActivity : BaseActivity(), MainView, MainRouter, NavigationView.OnNavi
     override fun onBackPressed() {
         if (mBackPressed + TIME_INTERVAL > System.currentTimeMillis()) {
             super.onBackPressed()
+            preferencesHelper.updateFirstSessionState(true)
             finish()
         } else {
             showMessageSnack("Click again to close!")
